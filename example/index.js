@@ -76,6 +76,12 @@
 	  }
 
 	  _createClass(Showcase, [{
+	    key: 'onEditDone',
+	    value: function onEditDone() {
+	      var output = document.querySelector('span.output');
+	      output.innerHTML = 'Edited at ' + new Date();
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
@@ -87,38 +93,86 @@
 	          _react2.default.createElement(
 	            'h1',
 	            null,
-	            'React pencil showcase'
+	            'React-pencil examples'
 	          )
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          null,
+	          { className: 'example' },
 	          _react2.default.createElement(
-	            'h2',
+	            'h3',
 	            null,
-	            'Oneline editing'
+	            'Single-line editing'
 	          ),
-	          _react2.default.createElement(_reactPencil2.default, null)
+	          _react2.default.createElement(_reactPencil2.default, { name: 'name', value: 'John Doe' })
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          null,
+	          { className: 'example' },
 	          _react2.default.createElement(
-	            'h2',
+	            'h3',
 	            null,
-	            'Multiline editing'
+	            'Multi-line editing'
 	          ),
-	          _react2.default.createElement(_reactPencil2.default, null)
+	          _react2.default.createElement(_reactPencil2.default, {
+	            name: 'bio',
+	            value: 'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...',
+	            className: 'bio',
+	            multiline: true
+	          })
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          null,
+	          { className: 'example' },
 	          _react2.default.createElement(
-	            'h2',
+	            'h3',
 	            null,
 	            'Placeholders'
 	          ),
-	          _react2.default.createElement(_reactPencil2.default, null)
+	          _react2.default.createElement(
+	            'h4',
+	            null,
+	            'Single-line'
+	          ),
+	          _react2.default.createElement(_reactPencil2.default, {
+	            name: 'firstname',
+	            placeholder: 'Type your firstname here...'
+	          }),
+	          _react2.default.createElement(
+	            'h4',
+	            null,
+	            'Multi-line'
+	          ),
+	          _react2.default.createElement(_reactPencil2.default, {
+	            name: 'firstname',
+	            multiline: true,
+	            placeholder: 'Type your bio here...'
+	          })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'example' },
+	          _react2.default.createElement(
+	            'h3',
+	            null,
+	            'Error display'
+	          ),
+	          _react2.default.createElement(_reactPencil2.default, {
+	            name: 'email',
+	            value: '@example.com',
+	            error: 'Invalid email address'
+	          })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'example' },
+	          _react2.default.createElement(
+	            'h3',
+	            null,
+	            'Callbacks'
+	          ),
+	          _react2.default.createElement(_reactPencil2.default, { value: 'John Doe', onEditDone: this.onEditDone }),
+	          _react2.default.createElement('span', { className: 'output' })
 	        )
 	      );
 	    }
@@ -20403,13 +20457,23 @@
 /* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _extends = Object.assign || function (target) {
+	  for (var i = 1; i < arguments.length; i++) {
+	    var source = arguments[i];for (var key in source) {
+	      if (Object.prototype.hasOwnProperty.call(source, key)) {
+	        target[key] = source[key];
+	      }
+	    }
+	  }return target;
+	};
 
 	var _createClass = function () {
 	  function defineProperties(target, props) {
@@ -20427,8 +20491,18 @@
 
 	var _reactDom = __webpack_require__(38);
 
+	var _autosizeInput = __webpack_require__(169);
+
+	var _autosizeInput2 = _interopRequireDefault(_autosizeInput);
+
 	function _interopRequireDefault(obj) {
 	  return obj && obj.__esModule ? obj : { default: obj };
+	}
+
+	function _objectWithoutProperties(obj, keys) {
+	  var target = {};for (var i in obj) {
+	    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+	  }return target;
 	}
 
 	function _classCallCheck(instance, Constructor) {
@@ -20449,39 +20523,380 @@
 	  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 	}
 
-	var Pencil = function (_React$Component) {
-	  _inherits(Pencil, _React$Component);
+	var Component = _react2.default.Component;
+	var PropTypes = _react2.default.PropTypes;
 
-	  function Pencil() {
-	    _classCallCheck(this, Pencil);
+	var commonPropTypes = {
+	  finishEdit: PropTypes.func.isRequired,
+	  placeholder: PropTypes.string,
+	  tabIndex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	  value: PropTypes.string
+	};
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Pencil).apply(this, arguments));
+	var commonDefaultProps = {};
+
+	function moveCursorToEnd(el) {
+	  if (el && el.tagName.toLowerCase().match(/input|textarea/)) {
+	    el.focus();
+	    if (el.setSelectionRange) {
+	      var len = el.value.length * 2;
+	      el.setSelectionRange(len, len);
+	    } else {
+	      el.value = el.value;
+	    }
+	    el.scrollTop = 999999;
+	  } else if (document.createRange) {
+	    var range = document.createRange();
+	    range.selectNodeContents(el);
+	    range.collapse(false);
+	    var selection = window.getSelection();
+	    selection.removeAllRanges();
+	    selection.addRange(range);
+	  }
+	}
+
+	var Singleline = function (_Component) {
+	  _inherits(Singleline, _Component);
+
+	  function Singleline() {
+	    _classCallCheck(this, Singleline);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Singleline).apply(this, arguments));
 	  }
 
-	  _createClass(Pencil, [{
+	  _createClass(Singleline, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.autosize();
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate() {
+	      this.autosize();
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      if (this._delayedFocus) {
+	        global.clearTimeout(this._delayedFocus);
+	      }
+	    }
+	  }, {
+	    key: 'autosize',
+	    value: function autosize() {
+	      (0, _autosizeInput2.default)(this.refs.content);
+	    }
+	  }, {
+	    key: 'focus',
+	    value: function focus() {
+	      var _this2 = this;
+
+	      this._delayedFocus = global.setTimeout(function () {
+	        moveCursorToEnd(_this2.refs.content);
+	        _this2.refs.content.focus();
+	      }, 110);
+	    }
+	  }, {
+	    key: 'blur',
+	    value: function blur() {
+	      this.refs.content.blur();
+	    }
+	  }, {
+	    key: 'onKeyUp',
+	    value: function onKeyUp(e) {
+	      if (e.keyCode === 27 || e.keyCode === 13) {
+	        this.blur();
+	      }
+	    }
+	  }, {
+	    key: 'onBlur',
+	    value: function onBlur(e) {
+	      this.props.finishEdit(e.target.value);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement('div', null, 'TODO');
+	      var _props = this.props;
+	      var value = _props.value;
+	      var name = _props.name;
+	      var style = _props.style;
+
+	      var rest = _objectWithoutProperties(_props, ['value', 'name', 'style']);
+
+	      return _react2.default.createElement('input', _extends({ type: 'text',
+	        ref: 'content',
+	        name: name,
+	        autoComplete: 'off',
+	        defaultValue: value,
+	        style: style,
+	        onBlur: this.onBlur.bind(this),
+	        onKeyUp: this.onKeyUp.bind(this)
+	      }, rest));
 	    }
 	  }]);
 
-	  return Pencil;
-	}(_react2.default.Component);
+	  return Singleline;
+	}(Component);
 
-	// Pencil.propTypes = {
-	//   value: React.PropTypes.string,
-	//   onChange: React.PropTypes.func,
-	//   onBlur: React.PropTypes.func,
-	//   onFocus: React.PropTypes.func,
-	//   cacheNodeStyling: React.PropTypes.bool,
-	//   rows: React.PropTypes.number,
-	//   minRows: React.PropTypes.number,
-	//   maxRows: React.PropTypes.number
-	// };
+	Object.assign(Singleline, {
+	  propTypes: commonPropTypes,
+	  defaultProps: commonDefaultProps
+	});
 
-	Pencil.defaultProps = {};
+	var Multiline = function (_Component2) {
+	  _inherits(Multiline, _Component2);
 
-	exports.default = Pencil;
+	  function Multiline() {
+	    _classCallCheck(this, Multiline);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Multiline).apply(this, arguments));
+	  }
+
+	  _createClass(Multiline, [{
+	    key: 'focus',
+	    value: function focus() {
+	      this._wasClicked = true;
+	      this.refs.content.focus();
+	    }
+	  }, {
+	    key: 'blur',
+	    value: function blur() {
+	      this.refs.content.blur();
+	    }
+	  }, {
+	    key: 'selectAll',
+	    value: function selectAll() {
+	      var _this4 = this;
+
+	      if (typeof global.document.execCommand === 'function') {
+	        // Mimic input behavior when navigating to element with TAB key.
+	        setTimeout(function () {
+	          if (!_this4._wasClicked) {
+	            global.document.execCommand('selectAll', false, null);
+	          }
+	        }, 50);
+	      }
+	    }
+	  }, {
+	    key: 'onFocus',
+	    value: function onFocus() {
+	      this.selectAll();
+	      moveCursorToEnd(this.refs.content);
+	    }
+	  }, {
+	    key: 'onClick',
+	    value: function onClick() {
+	      this._wasClicked = true;
+	      this.focus();
+	    }
+	  }, {
+	    key: 'onKeyDown',
+	    value: function onKeyDown(e) {
+	      if (e.keyCode === 27 || e.keyCode === 13) {
+	        e.preventDefault();
+	        this.blur();
+	      }
+	    }
+	  }, {
+	    key: 'onBlur',
+	    value: function onBlur(e) {
+	      this._wasClicked = false;
+	      this.props.finishEdit(e.target.innerText);
+	    }
+	  }, {
+	    key: 'ensureEmptyContent',
+	    value: function ensureEmptyContent() {
+	      if (!this.props.value) {
+	        this.refs.contentinnerHTML = '';
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props2 = this.props;
+	      var value = _props2.value;
+	      var style = _props2.style;
+
+	      var rest = _objectWithoutProperties(_props2, ['value', 'style']);
+
+	      return _react2.default.createElement('span', _extends({ ref: 'content',
+	        contentEditable: 'true',
+	        style: style,
+	        onFocus: this.onFocus.bind(this),
+	        onBlur: this.onBlur.bind(this),
+	        onClick: this.onClick.bind(this),
+	        onKeyDown: this.onKeyDown.bind(this),
+	        dangerouslySetInnerHTML: { __html: value || null }
+	      }, rest));
+	    }
+	  }]);
+
+	  return Multiline;
+	}(Component);
+
+	Object.assign(Multiline, {
+	  propTypes: commonPropTypes,
+	  defaultProps: commonDefaultProps
+	});
+
+	var ReactPencil = function (_Component3) {
+	  _inherits(ReactPencil, _Component3);
+
+	  function ReactPencil() {
+	    _classCallCheck(this, ReactPencil);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ReactPencil).apply(this, arguments));
+	  }
+
+	  _createClass(ReactPencil, [{
+	    key: 'focus',
+	    value: function focus() {
+	      this.refs.editable.focus();
+	    }
+	  }, {
+	    key: 'finishEdit',
+	    value: function finishEdit(newValue) {
+	      var _props3 = this.props;
+	      var _props3$oldValue = _props3.oldValue;
+	      var oldValue = _props3$oldValue === undefined ? '' : _props3$oldValue;
+	      var name = _props3.name;
+	      var multiline = _props3.multiline;
+
+	      newValue = newValue.trim();
+
+	      if (newValue !== oldValue) {
+	        this.props.onEditDone(name, newValue);
+	      }
+	      if (multiline) {
+	        this.refs.editable.ensureEmptyContent();
+	      }
+	    }
+	  }, {
+	    key: 'renderPencilButton',
+	    value: function renderPencilButton() {
+	      var _this6 = this;
+
+	      return _react2.default.createElement('button', { className: 'pencil-button', onClick: function onClick() {
+	          return _this6.focus();
+	        } }, _react2.default.createElement('i', { className: 'pencil-icon' }));
+	    }
+	  }, {
+	    key: 'renderError',
+	    value: function renderError(error) {
+	      return _react2.default.createElement('span', { className: 'error-msg' }, error);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props4 = this.props;
+	      var multiline = _props4.multiline;
+	      var pencil = _props4.pencil;
+	      var error = _props4.error;
+
+	      var Component = multiline ? Multiline : Singleline;
+	      return _react2.default.createElement('div', { className: 'react-pencil ' + (error ? 'error' : '') }, _react2.default.createElement(Component, _extends({ ref: 'editable' }, this.props, { finishEdit: this.finishEdit.bind(this) })), pencil ? this.renderPencilButton() : null, error ? this.renderError(error) : null);
+	    }
+	  }]);
+
+	  return ReactPencil;
+	}(Component);
+
+	Object.assign(ReactPencil, {
+	  propTypes: {
+	    error: PropTypes.string,
+	    multiline: PropTypes.bool,
+	    name: PropTypes.string,
+	    onEditDone: PropTypes.func,
+	    value: PropTypes.string
+	  },
+	  defaultProps: {
+	    value: '',
+	    pencil: true,
+	    onEditDone: function onEditDone() {}
+	  }
+	});
+
+	exports.default = ReactPencil;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 169 */
+/***/ function(module, exports, __webpack_require__) {
+
+	(function() {
+
+	  'use strict';
+
+	  // Compile and cache the needed regular expressions.
+	  var SPACE = /\s/g;
+	  var LESS_THAN = />/g;
+	  var MORE_THAN = /</g;
+
+	  // We need to swap out these characters with their character-entity
+	  // equivalents because we're assigning the resulting string to
+	  // `ghost.innerHTML`.
+	  function escape(str) {
+	    return str.replace(SPACE, '&nbsp;')
+	              .replace(LESS_THAN, '&lt;')
+	              .replace(MORE_THAN, '&gt;');
+	  }
+
+	  // Create the `ghost` element, with inline styles to hide it and ensure that
+	  // the text is all on a single line.
+	  var ghost = document.createElement('div');
+	  ghost.style.cssText = 'box-sizing:content-box;display:inline-block;height:0;overflow:hidden;position:absolute;top:0;visibility:hidden;white-space:nowrap;';
+	  document.body.appendChild(ghost);
+
+	  function autosizeInput(elem, opts) {
+
+	    // Force `content-box` on the `elem`.
+	    elem.style.boxSizing = 'content-box';
+
+	    // Apply the `font-size` and `font-family` styles of `elem` on the
+	    // `ghost` element.
+	    var elemStyle = window.getComputedStyle(elem);
+	    var elemCssText = 'font-family:' + elemStyle.fontFamily +
+	                     ';font-size:'   + elemStyle.fontSize;
+
+	    // Helper function that:
+	    // 1. Copies the `font-family` and `font-size` of our `elem` onto `ghost`
+	    // 2. Sets the contents of `ghost` to the specified `str`
+	    // 3. Copies the width of `ghost` onto our `elem`
+	    function set(str) {
+	      str = str || elem.value || elem.getAttribute('placeholder') || '';
+	      ghost.style.cssText += elemCssText;
+	      ghost.innerHTML = escape(str);
+	      var width = window.getComputedStyle(ghost).width;
+	      elem.style.width = width;
+	      return width;
+	    }
+
+	    // Call `set` on every `input` event (IE9+).
+	    elem.addEventListener('input', function() {
+	      set();
+	    });
+
+	    // Initialise the `elem` width.
+	    var width = set();
+
+	    // Set `min-width` if `opts.minWidth` was set, and only if the initial
+	    // width is non-zero.
+	    if (opts && opts.minWidth && width !== '0px') {
+	      elem.style.minWidth = width;
+	    }
+
+	    // Return the `set` function.
+	    return set;
+	  }
+
+	  if (true) {
+	    module.exports = autosizeInput;
+	  } else {
+	    window.autosizeInput = autosizeInput;
+	  }
+
+	})();
+
 
 /***/ }
 /******/ ]);

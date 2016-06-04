@@ -1,0 +1,78 @@
+body {
+  font-family: sans-serif;
+  font-size: 18px;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  padding-left: 10px;
+}
+
+input {
+  font-size: 0.8em;
+  border: 0;
+  outline: 0;
+  background: transparent;
+}
+
+input:hover {
+  cursor: pointer;
+  border-bottom: 1px solid #999;
+}
+
+input:focus {
+  border-bottom: 1px solid #999;
+}
+
+span {
+  font-size: 0.8em;
+}
+
+.example {
+  padding: 10px;
+  border-bottom: 1px solid #999;
+}
+
+.bio {
+  display: inline-block;
+  width: 300px;
+  font-size: 0.8em;
+}
+
+[contenteditable=true]:empty:before{
+  display: inline-block;
+  content: attr(placeholder);
+  color: #AEA9A9
+}
+
+input:focus + button, [contenteditable=true]:focus + button {
+  visibility: hidden;
+}
+
+.pencil-button {
+  padding: 3px;
+  border: none;
+  background: none;
+}
+
+.pencil-button:hover {
+  cursor: pointer;
+}
+
+.pencil-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-repeat: no-repeat;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACXBIWXMAAAsTAAALEwEAmpwYAAABWWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgpMwidZAAABJUlEQVQ4EY2TvUoDQRSFV2N8BZtgq5AqjYiFIhaihYRUIZX4FinVh7EXQUiXzgewFAstRDsNCSH+fifMgdllsuuBL/fOz5m5MzvJsv9rqTC1VmiXNuth9IB4BY3QXgmxNKyG0U3iB/zCENagUi5zn5mncAtaQNzBOiyUy9tmxjs8wRFcgxfpkCdl8x6jb2DDI/kJDOACkrJ5h9FXkPkTpiF/Jm5AUjbHO8v8Da7inNx3sxyv4k7t7LJn5F9gcz8y5MzeeTcyF3e2WQ8qaW4yMAKfOS7bZobzZnVIehRt0APRAr4w5ZVm5sy/7z3xGG6g8szMyemMlkz6RD1QJZdg5c7sTkVfXotcZ9YFHUIXXkCS+WeeJX5kkLZAf5oHmMAYvKAqW6g/PAdKj/33MOYAAAAASUVORK5CYII=)
+}
+
+.error {
+  color: #F13535;
+}
+
+.output {
+  color: #296AEA;
+}
