@@ -2,6 +2,8 @@
 
 A delicate React component that enables single-line and multi-line in-place edits. Single-line edits are performed on HTML input whereas multi-line edits are performed on content editable spans.
 
+![](http://g.recordit.co/vzoEKt6pIc.gif)
+
 React-pencil works on modern browsers such as Chrome, Firefox, Safari and IE 11+.
 
 ## Installation
@@ -21,7 +23,7 @@ $ npm i react-pencil
 - Fully customizable via pass through props
 - OnEditDone callback
 
-## Usage
+## Examples
 
 ### Single-line editing
 
