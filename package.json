@@ -1,6 +1,6 @@
 {
   "name": "react-pencil",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A React component that allows single and multiline in-place edits.",
   "main": "dist/react-pencil.js",
   "scripts": {
