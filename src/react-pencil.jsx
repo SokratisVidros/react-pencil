@@ -36,6 +36,11 @@ function moveCursorToEnd(el) {
 
 class Singleline extends Component {
 
+  constructor({value}) {
+    super();
+    this.state = {value};
+  }
+
   componentDidMount() {
     this.autosize();
   }
@@ -72,20 +77,25 @@ class Singleline extends Component {
   }
 
   onBlur(e) {
-    this.props.finishEdit(e.target.value);
+    this.props.finishEdit(this.state.value);
+  }
+
+  onChange(e) {
+    this.setState({value: e.target.value});
   }
 
   render() {
-    const {value, name, style, ...rest} = this.props;
+    const {name, value, style, ...rest} = this.props;
     return (
       <input type='text'
              ref='content'
              name={name}
              autoComplete='off'
-             defaultValue={value}
+             value={this.state.value}
              style={style}
              onBlur={this.onBlur.bind(this)}
              onKeyUp={this.onKeyUp.bind(this)}
+             onChange={this.onChange.bind(this)}
              {...rest}
       />
     );
