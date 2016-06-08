@@ -189,10 +189,10 @@ class ReactPencil extends Component {
   }
 
   finishEdit(newValue) {
-    const {oldValue = '', name, multiline} = this.props;
+    const {value, name, multiline} = this.props;
     newValue = newValue.trim();
 
-    if (newValue !== oldValue) {
+    if (newValue !== value) {
       this.props.onEditDone(name, newValue);
     }
     if (multiline) {
