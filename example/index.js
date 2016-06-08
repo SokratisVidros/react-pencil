@@ -171,7 +171,11 @@
 	            null,
 	            'Callbacks'
 	          ),
-	          _react2.default.createElement(_reactPencil2.default, { value: 'John Doe', onEditDone: this.onEditDone }),
+	          _react2.default.createElement(_reactPencil2.default, {
+	            value: 'John Doe',
+	            placeholder: 'Type your name',
+	            onEditDone: this.onEditDone
+	          }),
 	          _react2.default.createElement('span', { className: 'output' })
 	        )
 	      );
@@ -20558,10 +20562,15 @@
 	var Singleline = function (_Component) {
 	  _inherits(Singleline, _Component);
 
-	  function Singleline() {
+	  function Singleline(_ref) {
+	    var value = _ref.value;
+
 	    _classCallCheck(this, Singleline);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Singleline).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Singleline).call(this));
+
+	    _this.state = { value: value };
+	    return _this;
 	  }
 
 	  _createClass(Singleline, [{
@@ -20611,26 +20620,32 @@
 	  }, {
 	    key: 'onBlur',
 	    value: function onBlur(e) {
-	      this.props.finishEdit(e.target.value);
+	      this.props.finishEdit(this.state.value);
+	    }
+	  }, {
+	    key: 'onChange',
+	    value: function onChange(e) {
+	      this.setState({ value: e.target.value });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _props = this.props;
-	      var value = _props.value;
 	      var name = _props.name;
+	      var value = _props.value;
 	      var style = _props.style;
 
-	      var rest = _objectWithoutProperties(_props, ['value', 'name', 'style']);
+	      var rest = _objectWithoutProperties(_props, ['name', 'value', 'style']);
 
 	      return _react2.default.createElement('input', _extends({ type: 'text',
 	        ref: 'content',
 	        name: name,
 	        autoComplete: 'off',
-	        defaultValue: value,
+	        value: this.state.value,
 	        style: style,
 	        onBlur: this.onBlur.bind(this),
-	        onKeyUp: this.onKeyUp.bind(this)
+	        onKeyUp: this.onKeyUp.bind(this),
+	        onChange: this.onChange.bind(this)
 	      }, rest));
 	    }
 	  }]);
@@ -20757,14 +20772,13 @@
 	    key: 'finishEdit',
 	    value: function finishEdit(newValue) {
 	      var _props3 = this.props;
-	      var _props3$oldValue = _props3.oldValue;
-	      var oldValue = _props3$oldValue === undefined ? '' : _props3$oldValue;
+	      var value = _props3.value;
 	      var name = _props3.name;
 	      var multiline = _props3.multiline;
 
 	      newValue = newValue.trim();
 
-	      if (newValue !== oldValue) {
+	      if (newValue !== value) {
 	        this.props.onEditDone(name, newValue);
 	      }
 	      if (multiline) {
@@ -20792,9 +20806,12 @@
 	      var multiline = _props4.multiline;
 	      var pencil = _props4.pencil;
 	      var error = _props4.error;
+	      var wrapperClassname = _props4.wrapperClassname;
+
+	      var rest = _objectWithoutProperties(_props4, ['multiline', 'pencil', 'error', 'wrapperClassname']);
 
 	      var Component = multiline ? Multiline : Singleline;
-	      return _react2.default.createElement('div', { className: 'react-pencil ' + (error ? 'error' : '') }, _react2.default.createElement(Component, _extends({ ref: 'editable' }, this.props, { finishEdit: this.finishEdit.bind(this) })), pencil ? this.renderPencilButton() : null, error ? this.renderError(error) : null);
+	      return _react2.default.createElement('div', { className: 'react-pencil ' + wrapperClassname + ' ' + (error ? 'error' : '') }, _react2.default.createElement(Component, _extends({ ref: 'editable' }, rest, { finishEdit: this.finishEdit.bind(this) })), pencil ? this.renderPencilButton() : null, error ? this.renderError(error) : null);
 	    }
 	  }]);
 

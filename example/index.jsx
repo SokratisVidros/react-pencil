@@ -52,7 +52,11 @@ class Showcase extends React.Component {
         </div>
         <div className='example'>
           <h3>Callbacks</h3>
-          <ReactPencil value='John Doe' onEditDone={this.onEditDone}/>
+          <ReactPencil
+            value='John Doe'
+            placeholder='Type your name'
+            onEditDone={this.onEditDone}
+          />
           <span className='output'></span>
         </div>
       </section>
