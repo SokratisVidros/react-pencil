@@ -85,7 +85,7 @@ class Singleline extends Component {
   }
 
   render() {
-    const {name, value, style, ...rest} = this.props;
+    const {name, value, style, finishEdit, ...rest} = this.props;
     return (
       <input type='text'
              ref='content'
@@ -159,7 +159,7 @@ class Multiline extends Component {
   }
 
   render() {
-    const {value, style, ...rest} = this.props;
+    const {value, style, finishEdit, ...rest} = this.props;
     return (
       <span ref='content'
             contentEditable='true'
@@ -213,7 +213,7 @@ class ReactPencil extends Component {
   }
 
   render() {
-    const {multiline, pencil, error, wrapperClassname, ...rest} = this.props;
+    const {multiline, pencil, error, wrapperClassname, onEditDone, ...rest} = this.props;
     const Component = multiline ? Multiline : Singleline;
     return (
       <div className={`react-pencil ${wrapperClassname} ${error ? 'error' : ''}`}>
