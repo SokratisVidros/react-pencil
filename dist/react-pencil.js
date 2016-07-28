@@ -95,7 +95,9 @@ var Singleline = function (_Component) {
   }, {
     key: 'autosize',
     value: function autosize() {
-      (0, _autosizeInput2.default)(this.refs.content);
+      try {
+        (0, _autosizeInput2.default)(this.refs.content);
+      } catch (ignore) {}
     }
   }, {
     key: 'focus',
@@ -136,8 +138,9 @@ var Singleline = function (_Component) {
       var name = _props.name;
       var value = _props.value;
       var style = _props.style;
+      var finishEdit = _props.finishEdit;
 
-      var rest = _objectWithoutProperties(_props, ['name', 'value', 'style']);
+      var rest = _objectWithoutProperties(_props, ['name', 'value', 'style', 'finishEdit']);
 
       return _react2.default.createElement('input', _extends({ type: 'text',
         ref: 'content',
@@ -233,8 +236,9 @@ var Multiline = function (_Component2) {
       var _props2 = this.props;
       var value = _props2.value;
       var style = _props2.style;
+      var finishEdit = _props2.finishEdit;
 
-      var rest = _objectWithoutProperties(_props2, ['value', 'style']);
+      var rest = _objectWithoutProperties(_props2, ['value', 'style', 'finishEdit']);
 
       return _react2.default.createElement('span', _extends({ ref: 'content',
         contentEditable: 'true',
@@ -317,8 +321,9 @@ var ReactPencil = function (_Component3) {
       var pencil = _props4.pencil;
       var error = _props4.error;
       var wrapperClassname = _props4.wrapperClassname;
+      var onEditDone = _props4.onEditDone;
 
-      var rest = _objectWithoutProperties(_props4, ['multiline', 'pencil', 'error', 'wrapperClassname']);
+      var rest = _objectWithoutProperties(_props4, ['multiline', 'pencil', 'error', 'wrapperClassname', 'onEditDone']);
 
       var Component = multiline ? Multiline : Singleline;
       return _react2.default.createElement(
