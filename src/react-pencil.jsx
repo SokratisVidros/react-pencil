@@ -56,7 +56,9 @@ class Singleline extends Component {
   }
 
   autosize() {
-    autosizeInput(this.refs.content);
+    try {
+      autosizeInput(this.refs.content);
+    } catch (ignore) {}
   }
 
   focus() {
