@@ -206,7 +206,7 @@ class ReactPencil extends Component {
     return (
       <button className='pencil-button' onClick={() => this.focus()}>
         <i className='pencil-icon'></i>
-      </button> : null
+      </button>
     );
   }
 
