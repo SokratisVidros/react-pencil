@@ -36,11 +36,6 @@ function moveCursorToEnd(el) {
 
 class Singleline extends Component {
 
-  constructor({value}) {
-    super();
-    this.state = {value};
-  }
-
   componentDidMount() {
     this.autosize();
   }
@@ -78,12 +73,12 @@ class Singleline extends Component {
     }
   }
 
-  onBlur(e) {
-    this.props.finishEdit(this.state.value);
+  onBlur() {
+    this.props.finishEdit(this.props.value);
   }
 
   onChange(e) {
-    this.setState({value: e.target.value});
+    this.props.value = e.target.value;
   }
 
   render() {
@@ -93,7 +88,7 @@ class Singleline extends Component {
              ref='content'
              name={name}
              autoComplete='off'
-             value={this.state.value}
+             value={value}
              style={style}
              onBlur={this.onBlur.bind(this)}
              onKeyUp={this.onKeyUp.bind(this)}
@@ -206,7 +201,7 @@ class ReactPencil extends Component {
     return (
       <button className='pencil-button' onClick={() => this.focus()}>
         <i className='pencil-icon'></i>
-      </button> : null
+      </button>
     );
   }
 
