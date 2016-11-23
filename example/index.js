@@ -72,7 +72,7 @@
 	  function Showcase() {
 	    _classCallCheck(this, Showcase);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Showcase).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (Showcase.__proto__ || Object.getPrototypeOf(Showcase)).apply(this, arguments));
 	  }
 
 	  _createClass(Showcase, [{
@@ -296,7 +296,6 @@
 /***/ function(module, exports) {
 
 	// shim for using process in browser
-
 	var process = module.exports = {};
 
 	// cached from whatever global is present so that test runners that stub it
@@ -307,22 +306,84 @@
 	var cachedSetTimeout;
 	var cachedClearTimeout;
 
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
 	(function () {
-	  try {
-	    cachedSetTimeout = setTimeout;
-	  } catch (e) {
-	    cachedSetTimeout = function () {
-	      throw new Error('setTimeout is not defined');
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
 	    }
-	  }
-	  try {
-	    cachedClearTimeout = clearTimeout;
-	  } catch (e) {
-	    cachedClearTimeout = function () {
-	      throw new Error('clearTimeout is not defined');
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
 	    }
-	  }
 	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+
+
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+
+
+
+	}
 	var queue = [];
 	var draining = false;
 	var currentQueue;
@@ -347,7 +408,7 @@
 	    if (draining) {
 	        return;
 	    }
-	    var timeout = cachedSetTimeout.call(null, cleanUpNextTick);
+	    var timeout = runTimeout(cleanUpNextTick);
 	    draining = true;
 
 	    var len = queue.length;
@@ -364,7 +425,7 @@
 	    }
 	    currentQueue = null;
 	    draining = false;
-	    cachedClearTimeout.call(null, timeout);
+	    runClearTimeout(timeout);
 	}
 
 	process.nextTick = function (fun) {
@@ -376,7 +437,7 @@
 	    }
 	    queue.push(new Item(fun, args));
 	    if (queue.length === 1 && !draining) {
-	        cachedSetTimeout.call(null, drainQueue, 0);
+	        runTimeout(drainQueue);
 	    }
 	};
 
@@ -1349,20 +1410,12 @@
 	var warning = emptyFunction;
 
 	if (process.env.NODE_ENV !== 'production') {
-	  warning = function warning(condition, format) {
-	    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-	      args[_key - 2] = arguments[_key];
-	    }
+	  (function () {
+	    var printWarning = function printWarning(format) {
+	      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	        args[_key - 1] = arguments[_key];
+	      }
 
-	    if (format === undefined) {
-	      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-	    }
-
-	    if (format.indexOf('Failed Composite propType: ') === 0) {
-	      return; // Ignore CompositeComponent proptype check.
-	    }
-
-	    if (!condition) {
 	      var argIndex = 0;
 	      var message = 'Warning: ' + format.replace(/%s/g, function () {
 	        return args[argIndex++];
@@ -1376,8 +1429,26 @@
 	        // to find the callsite that caused this warning to fire.
 	        throw new Error(message);
 	      } catch (x) {}
-	    }
-	  };
+	    };
+
+	    warning = function warning(condition, format) {
+	      if (format === undefined) {
+	        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+	      }
+
+	      if (format.indexOf('Failed Composite propType: ') === 0) {
+	        return; // Ignore CompositeComponent proptype check.
+	      }
+
+	      if (!condition) {
+	        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+	          args[_key2 - 2] = arguments[_key2];
+	        }
+
+	        printWarning.apply(undefined, [format].concat(args));
+	      }
+	    };
+	  })();
 	}
 
 	module.exports = warning;
@@ -10306,7 +10377,7 @@
 	 * @return {boolean}
 	 */
 	function hasArrayNature(obj) {
-	  return(
+	  return (
 	    // not null/false
 	    !!obj && (
 	    // arrays are objects, NodeLists are functions in Safari
@@ -16759,7 +16830,8 @@
 	  if (x === y) {
 	    // Steps 1-5, 7-10
 	    // Steps 6.b-6.e: +0 != -0
-	    return x !== 0 || 1 / x === 1 / y;
+	    // Added the nonzero y check to make Flow happy, but it is redundant
+	    return x !== 0 || y !== 0 || 1 / x === 1 / y;
 	  } else {
 	    // Step 6.a: NaN == NaN
 	    return x !== x && y !== y;
@@ -21227,7 +21299,7 @@
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -21291,8 +21363,8 @@
 	  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 	}
 
-	var Component = _react2.default.Component;
-	var PropTypes = _react2.default.PropTypes;
+	var Component = _react2.default.Component,
+	    PropTypes = _react2.default.PropTypes;
 
 	var commonPropTypes = {
 	  finishEdit: PropTypes.func.isRequired,
@@ -21331,7 +21403,7 @@
 
 	    _classCallCheck(this, Singleline);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Singleline).call(this));
+	    var _this = _possibleConstructorReturn(this, (Singleline.__proto__ || Object.getPrototypeOf(Singleline)).call(this));
 
 	    _this.state = { value: value };
 	    return _this;
@@ -21352,6 +21424,15 @@
 	    value: function componentWillUnmount() {
 	      if (this._delayedFocus) {
 	        global.clearTimeout(this._delayedFocus);
+	      }
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(_ref2) {
+	      var value = _ref2.value;
+
+	      if (this.state.value !== value) {
+	        this.setState({ value: value });
 	      }
 	    }
 	  }, {
@@ -21396,13 +21477,12 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _props = this.props;
-	      var name = _props.name;
-	      var value = _props.value;
-	      var style = _props.style;
-	      var finishEdit = _props.finishEdit;
-
-	      var rest = _objectWithoutProperties(_props, ['name', 'value', 'style', 'finishEdit']);
+	      var _props = this.props,
+	          name = _props.name,
+	          value = _props.value,
+	          style = _props.style,
+	          finishEdit = _props.finishEdit,
+	          rest = _objectWithoutProperties(_props, ['name', 'value', 'style', 'finishEdit']);
 
 	      return _react2.default.createElement('input', _extends({ type: 'text',
 	        ref: 'content',
@@ -21431,7 +21511,7 @@
 	  function Multiline() {
 	    _classCallCheck(this, Multiline);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Multiline).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (Multiline.__proto__ || Object.getPrototypeOf(Multiline)).apply(this, arguments));
 	  }
 
 	  _createClass(Multiline, [{
@@ -21495,12 +21575,11 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _props2 = this.props;
-	      var value = _props2.value;
-	      var style = _props2.style;
-	      var finishEdit = _props2.finishEdit;
-
-	      var rest = _objectWithoutProperties(_props2, ['value', 'style', 'finishEdit']);
+	      var _props2 = this.props,
+	          value = _props2.value,
+	          style = _props2.style,
+	          finishEdit = _props2.finishEdit,
+	          rest = _objectWithoutProperties(_props2, ['value', 'style', 'finishEdit']);
 
 	      return _react2.default.createElement('span', _extends({ ref: 'content',
 	        contentEditable: 'true',
@@ -21528,7 +21607,7 @@
 	  function ReactPencil() {
 	    _classCallCheck(this, ReactPencil);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ReactPencil).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (ReactPencil.__proto__ || Object.getPrototypeOf(ReactPencil)).apply(this, arguments));
 	  }
 
 	  _createClass(ReactPencil, [{
@@ -21539,10 +21618,10 @@
 	  }, {
 	    key: 'finishEdit',
 	    value: function finishEdit(newValue) {
-	      var _props3 = this.props;
-	      var value = _props3.value;
-	      var name = _props3.name;
-	      var multiline = _props3.multiline;
+	      var _props3 = this.props,
+	          value = _props3.value,
+	          name = _props3.name,
+	          multiline = _props3.multiline;
 
 	      newValue = newValue.trim();
 
@@ -21570,14 +21649,13 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _props4 = this.props;
-	      var multiline = _props4.multiline;
-	      var pencil = _props4.pencil;
-	      var error = _props4.error;
-	      var wrapperClassname = _props4.wrapperClassname;
-	      var onEditDone = _props4.onEditDone;
-
-	      var rest = _objectWithoutProperties(_props4, ['multiline', 'pencil', 'error', 'wrapperClassname', 'onEditDone']);
+	      var _props4 = this.props,
+	          multiline = _props4.multiline,
+	          pencil = _props4.pencil,
+	          error = _props4.error,
+	          wrapperClassname = _props4.wrapperClassname,
+	          onEditDone = _props4.onEditDone,
+	          rest = _objectWithoutProperties(_props4, ['multiline', 'pencil', 'error', 'wrapperClassname', 'onEditDone']);
 
 	      var Component = multiline ? Multiline : Singleline;
 	      return _react2.default.createElement('div', { className: 'react-pencil ' + wrapperClassname + ' ' + (error ? 'error' : '') }, _react2.default.createElement(Component, _extends({ ref: 'editable' }, rest, { finishEdit: this.finishEdit.bind(this) })), pencil ? this.renderPencilButton() : null, error ? this.renderError(error) : null);

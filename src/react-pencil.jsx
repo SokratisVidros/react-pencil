@@ -55,6 +55,12 @@ class Singleline extends Component {
     }
   }
 
+  componentWillReceiveProps({value}) {
+    if (this.state.value !== value) {
+      this.setState({value});
+    }
+  }
+
   autosize() {
     try {
       autosizeInput(this.refs.content);

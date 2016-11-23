@@ -28,8 +28,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Component = _react2.default.Component;
-var PropTypes = _react2.default.PropTypes;
+var Component = _react2.default.Component,
+    PropTypes = _react2.default.PropTypes;
 
 
 var commonPropTypes = {
@@ -69,7 +69,7 @@ var Singleline = function (_Component) {
 
     _classCallCheck(this, Singleline);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Singleline).call(this));
+    var _this = _possibleConstructorReturn(this, (Singleline.__proto__ || Object.getPrototypeOf(Singleline)).call(this));
 
     _this.state = { value: value };
     return _this;
@@ -90,6 +90,15 @@ var Singleline = function (_Component) {
     value: function componentWillUnmount() {
       if (this._delayedFocus) {
         global.clearTimeout(this._delayedFocus);
+      }
+    }
+  }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(_ref2) {
+      var value = _ref2.value;
+
+      if (this.state.value !== value) {
+        this.setState({ value: value });
       }
     }
   }, {
@@ -134,13 +143,12 @@ var Singleline = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _props = this.props;
-      var name = _props.name;
-      var value = _props.value;
-      var style = _props.style;
-      var finishEdit = _props.finishEdit;
-
-      var rest = _objectWithoutProperties(_props, ['name', 'value', 'style', 'finishEdit']);
+      var _props = this.props,
+          name = _props.name,
+          value = _props.value,
+          style = _props.style,
+          finishEdit = _props.finishEdit,
+          rest = _objectWithoutProperties(_props, ['name', 'value', 'style', 'finishEdit']);
 
       return _react2.default.createElement('input', _extends({ type: 'text',
         ref: 'content',
@@ -169,7 +177,7 @@ var Multiline = function (_Component2) {
   function Multiline() {
     _classCallCheck(this, Multiline);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Multiline).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Multiline.__proto__ || Object.getPrototypeOf(Multiline)).apply(this, arguments));
   }
 
   _createClass(Multiline, [{
@@ -233,12 +241,11 @@ var Multiline = function (_Component2) {
   }, {
     key: 'render',
     value: function render() {
-      var _props2 = this.props;
-      var value = _props2.value;
-      var style = _props2.style;
-      var finishEdit = _props2.finishEdit;
-
-      var rest = _objectWithoutProperties(_props2, ['value', 'style', 'finishEdit']);
+      var _props2 = this.props,
+          value = _props2.value,
+          style = _props2.style,
+          finishEdit = _props2.finishEdit,
+          rest = _objectWithoutProperties(_props2, ['value', 'style', 'finishEdit']);
 
       return _react2.default.createElement('span', _extends({ ref: 'content',
         contentEditable: 'true',
@@ -266,7 +273,7 @@ var ReactPencil = function (_Component3) {
   function ReactPencil() {
     _classCallCheck(this, ReactPencil);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(ReactPencil).apply(this, arguments));
+    return _possibleConstructorReturn(this, (ReactPencil.__proto__ || Object.getPrototypeOf(ReactPencil)).apply(this, arguments));
   }
 
   _createClass(ReactPencil, [{
@@ -277,10 +284,10 @@ var ReactPencil = function (_Component3) {
   }, {
     key: 'finishEdit',
     value: function finishEdit(newValue) {
-      var _props3 = this.props;
-      var value = _props3.value;
-      var name = _props3.name;
-      var multiline = _props3.multiline;
+      var _props3 = this.props,
+          value = _props3.value,
+          name = _props3.name,
+          multiline = _props3.multiline;
 
       newValue = newValue.trim();
 
@@ -316,14 +323,13 @@ var ReactPencil = function (_Component3) {
   }, {
     key: 'render',
     value: function render() {
-      var _props4 = this.props;
-      var multiline = _props4.multiline;
-      var pencil = _props4.pencil;
-      var error = _props4.error;
-      var wrapperClassname = _props4.wrapperClassname;
-      var onEditDone = _props4.onEditDone;
-
-      var rest = _objectWithoutProperties(_props4, ['multiline', 'pencil', 'error', 'wrapperClassname', 'onEditDone']);
+      var _props4 = this.props,
+          multiline = _props4.multiline,
+          pencil = _props4.pencil,
+          error = _props4.error,
+          wrapperClassname = _props4.wrapperClassname,
+          onEditDone = _props4.onEditDone,
+          rest = _objectWithoutProperties(_props4, ['multiline', 'pencil', 'error', 'wrapperClassname', 'onEditDone']);
 
       var Component = multiline ? Multiline : Singleline;
       return _react2.default.createElement(
