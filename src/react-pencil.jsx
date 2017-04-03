@@ -196,7 +196,7 @@ class ReactPencil extends Component {
     this.refs.editable.focus();
   }
 
-  finishEdit(newValue) {
+  finishEdit(newValue = '') {
     const {value, name, multiline} = this.props;
     newValue = newValue.trim();
 
