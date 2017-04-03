@@ -283,7 +283,8 @@ var ReactPencil = function (_Component3) {
     }
   }, {
     key: 'finishEdit',
-    value: function finishEdit(newValue) {
+    value: function finishEdit() {
+      var newValue = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
       var _props3 = this.props,
           value = _props3.value,
           name = _props3.name,
