@@ -224,7 +224,7 @@ class ReactPencil extends Component {
     const {multiline, pencil, error, wrapperClassname, onEditDone, ...rest} = this.props;
     const Component = multiline ? Multiline : Singleline;
     return (
-      <div className={`react-pencil ${wrapperClassname} ${error ? 'error' : ''}`}>
+      <div className={`react-pencil${wrapperClassname ? ' ' + wrapperClassname : ''}${error ? ' error' : ''}`}>
         <Component ref='editable' {...rest} finishEdit={this.finishEdit.bind(this)}/>
         {pencil ? this.renderPencilButton() : null}
         {error ? this.renderError(error) : null}
