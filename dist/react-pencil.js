@@ -89,7 +89,7 @@ var Singleline = function (_Component) {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       if (this._delayedFocus) {
-        global.clearTimeout(this._delayedFocus);
+        window.clearTimeout(this._delayedFocus);
       }
     }
   }, {
@@ -113,7 +113,7 @@ var Singleline = function (_Component) {
     value: function focus() {
       var _this2 = this;
 
-      this._delayedFocus = global.setTimeout(function () {
+      this._delayedFocus = window.setTimeout(function () {
         moveCursorToEnd(_this2.refs.content);
         _this2.refs.content.focus();
       }, 110);
@@ -196,11 +196,11 @@ var Multiline = function (_Component2) {
     value: function selectAll() {
       var _this4 = this;
 
-      if (typeof global.document.execCommand === 'function') {
+      if (document && typeof document.execCommand === 'function') {
         // Mimic input behavior when navigating to element with TAB key.
         setTimeout(function () {
           if (!_this4._wasClicked) {
-            global.document.execCommand('selectAll', false, null);
+            document.execCommand('selectAll', false, null);
           }
         }, 50);
       }
@@ -335,7 +335,7 @@ var ReactPencil = function (_Component3) {
       var Component = multiline ? Multiline : Singleline;
       return _react2.default.createElement(
         'div',
-        { className: 'react-pencil ' + wrapperClassname + ' ' + (error ? 'error' : '') },
+        { className: 'react-pencil' + (wrapperClassname ? ' ' + wrapperClassname : '') + (error ? ' error' : '') },
         _react2.default.createElement(Component, _extends({ ref: 'editable' }, rest, { finishEdit: this.finishEdit.bind(this) })),
         pencil ? this.renderPencilButton() : null,
         error ? this.renderError(error) : null

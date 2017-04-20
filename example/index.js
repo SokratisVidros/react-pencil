@@ -21297,7 +21297,7 @@
 /* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+	'use strict';
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -21423,7 +21423,7 @@
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
 	      if (this._delayedFocus) {
-	        global.clearTimeout(this._delayedFocus);
+	        window.clearTimeout(this._delayedFocus);
 	      }
 	    }
 	  }, {
@@ -21447,7 +21447,7 @@
 	    value: function focus() {
 	      var _this2 = this;
 
-	      this._delayedFocus = global.setTimeout(function () {
+	      this._delayedFocus = window.setTimeout(function () {
 	        moveCursorToEnd(_this2.refs.content);
 	        _this2.refs.content.focus();
 	      }, 110);
@@ -21530,11 +21530,11 @@
 	    value: function selectAll() {
 	      var _this4 = this;
 
-	      if (typeof global.document.execCommand === 'function') {
+	      if (document && typeof document.execCommand === 'function') {
 	        // Mimic input behavior when navigating to element with TAB key.
 	        setTimeout(function () {
 	          if (!_this4._wasClicked) {
-	            global.document.execCommand('selectAll', false, null);
+	            document.execCommand('selectAll', false, null);
 	          }
 	        }, 50);
 	      }
@@ -21659,7 +21659,7 @@
 	          rest = _objectWithoutProperties(_props4, ['multiline', 'pencil', 'error', 'wrapperClassname', 'onEditDone']);
 
 	      var Component = multiline ? Multiline : Singleline;
-	      return _react2.default.createElement('div', { className: 'react-pencil ' + wrapperClassname + ' ' + (error ? 'error' : '') }, _react2.default.createElement(Component, _extends({ ref: 'editable' }, rest, { finishEdit: this.finishEdit.bind(this) })), pencil ? this.renderPencilButton() : null, error ? this.renderError(error) : null);
+	      return _react2.default.createElement('div', { className: 'react-pencil' + (wrapperClassname ? ' ' + wrapperClassname : '') + (error ? ' error' : '') }, _react2.default.createElement(Component, _extends({ ref: 'editable' }, rest, { finishEdit: this.finishEdit.bind(this) })), pencil ? this.renderPencilButton() : null, error ? this.renderError(error) : null);
 	    }
 	  }]);
 
@@ -21682,7 +21682,6 @@
 	});
 
 	exports.default = ReactPencil;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 173 */
