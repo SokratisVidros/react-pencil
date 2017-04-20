@@ -51,7 +51,7 @@ class Singleline extends Component {
 
   componentWillUnmount() {
     if (this._delayedFocus) {
-      global.clearTimeout(this._delayedFocus);
+      window.clearTimeout(this._delayedFocus);
     }
   }
 
@@ -68,7 +68,7 @@ class Singleline extends Component {
   }
 
   focus() {
-    this._delayedFocus = global.setTimeout(() => {
+    this._delayedFocus = window.setTimeout(() => {
       moveCursorToEnd(this.refs.content);
       this.refs.content.focus();
     }, 110);
@@ -128,11 +128,11 @@ class Multiline extends Component {
   }
 
   selectAll() {
-    if (typeof global.document.execCommand === 'function') {
+    if (document && typeof document.execCommand === 'function') {
       // Mimic input behavior when navigating to element with TAB key.
       setTimeout(() => {
         if (!this._wasClicked) {
-          global.document.execCommand('selectAll', false, null);
+          document.execCommand('selectAll', false, null);
         }
       }, 50);
     }
