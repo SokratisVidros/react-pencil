@@ -21645,7 +21645,7 @@
 	  }, {
 	    key: 'renderError',
 	    value: function renderError(error) {
-	      return _react2.default.createElement('span', { className: 'error-msg' }, error);
+	      return _react2.default.createElement('div', { className: 'error-msg' }, error);
 	    }
 	  }, {
 	    key: 'render',
@@ -21659,7 +21659,7 @@
 	          rest = _objectWithoutProperties(_props4, ['multiline', 'pencil', 'error', 'wrapperClassname', 'onEditDone']);
 
 	      var Component = multiline ? Multiline : Singleline;
-	      return _react2.default.createElement('div', { className: 'react-pencil' + (wrapperClassname ? ' ' + wrapperClassname : '') + (error ? ' error' : '') }, _react2.default.createElement(Component, _extends({ ref: 'editable' }, rest, { finishEdit: this.finishEdit.bind(this) })), pencil ? this.renderPencilButton() : null, error ? this.renderError(error) : null);
+	      return _react2.default.createElement('div', { className: 'react-pencil' + (wrapperClassname ? ' ' + wrapperClassname : '') + (error ? ' error' : '') }, _react2.default.createElement('div', { className: 'input' }, _react2.default.createElement(Component, _extends({ ref: 'editable' }, rest, { finishEdit: this.finishEdit.bind(this) })), pencil ? this.renderPencilButton() : null), error ? this.renderError(error) : null);
 	    }
 	  }]);
 

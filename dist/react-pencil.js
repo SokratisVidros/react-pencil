@@ -316,7 +316,7 @@ var ReactPencil = function (_Component3) {
     key: 'renderError',
     value: function renderError(error) {
       return _react2.default.createElement(
-        'span',
+        'div',
         { className: 'error-msg' },
         error
       );
@@ -336,8 +336,12 @@ var ReactPencil = function (_Component3) {
       return _react2.default.createElement(
         'div',
         { className: 'react-pencil' + (wrapperClassname ? ' ' + wrapperClassname : '') + (error ? ' error' : '') },
-        _react2.default.createElement(Component, _extends({ ref: 'editable' }, rest, { finishEdit: this.finishEdit.bind(this) })),
-        pencil ? this.renderPencilButton() : null,
+        _react2.default.createElement(
+          'div',
+          { className: 'input' },
+          _react2.default.createElement(Component, _extends({ ref: 'editable' }, rest, { finishEdit: this.finishEdit.bind(this) })),
+          pencil ? this.renderPencilButton() : null
+        ),
         error ? this.renderError(error) : null
       );
     }

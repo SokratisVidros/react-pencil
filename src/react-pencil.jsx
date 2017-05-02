@@ -217,7 +217,7 @@ class ReactPencil extends Component {
   }
 
   renderError(error) {
-    return <span className='error-msg'>{error}</span>
+    return <div className='error-msg'>{error}</div>
   }
 
   render() {
@@ -225,8 +225,10 @@ class ReactPencil extends Component {
     const Component = multiline ? Multiline : Singleline;
     return (
       <div className={`react-pencil${wrapperClassname ? ' ' + wrapperClassname : ''}${error ? ' error' : ''}`}>
-        <Component ref='editable' {...rest} finishEdit={this.finishEdit.bind(this)}/>
-        {pencil ? this.renderPencilButton() : null}
+        <div className='input-field'>
+          <Component ref='editable' {...rest} finishEdit={this.finishEdit.bind(this)}/>
+          {pencil ? this.renderPencilButton() : null}
+        </div>
         {error ? this.renderError(error) : null}
       </div>
     );
