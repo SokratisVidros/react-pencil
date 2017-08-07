@@ -1,8 +1,11 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import {render} from 'react-dom';
 import autosizeInput from 'autosize-input';
 
-const {Component, PropTypes} = React;
+const {
+  Component
+} = React;
 
 const commonPropTypes = {
   finishEdit: PropTypes.func.isRequired,
