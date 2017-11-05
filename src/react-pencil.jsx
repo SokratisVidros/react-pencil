@@ -42,6 +42,9 @@ class Singleline extends Component {
   constructor({value}) {
     super();
     this.state = {value};
+    this.onBlur = this.onBlur.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   componentDidMount() {
@@ -73,12 +76,12 @@ class Singleline extends Component {
   focus() {
     this._delayedFocus = window.setTimeout(() => {
       moveCursorToEnd(this.refs.content);
-      this.refs.content.focus();
+      this.content.focus();
     }, 110);
   }
 
   blur() {
-    this.refs.content.blur();
+    this.content.blur();
   }
 
   onKeyUp(e) {
@@ -99,14 +102,14 @@ class Singleline extends Component {
     const {name, value, style, finishEdit, ...rest} = this.props;
     return (
       <input type='text'
-             ref='content'
+             ref={el => (this.content = el)}
              name={name}
              autoComplete='off'
              value={this.state.value}
              style={style}
-             onBlur={this.onBlur.bind(this)}
-             onKeyUp={this.onKeyUp.bind(this)}
-             onChange={this.onChange.bind(this)}
+             onBlur={this.onBlur}
+             onKeyUp={this.onKeyUp}
+             onChange={this.onChange}
              {...rest}
       />
     );
@@ -121,13 +124,21 @@ Object.assign(Singleline, {
 
 class Multiline extends Component {
 
+  constructor(props) {
+    super(props);
+    this.onFocus= this.onFocus.bind(this);
+    this.onBlur= this.onBlur.bind(this);
+    this.onClick= this.onClick.bind(this);
+    this.onKeyDown= this.onKeyDown.bind(this);
+  }
+
   focus() {
     this._wasClicked = true;
-    this.refs.content.focus();
+    this.content.focus();
   }
 
   blur() {
-    this.refs.content.blur();
+    this.content.blur();
   }
 
   selectAll() {
@@ -165,20 +176,20 @@ class Multiline extends Component {
 
   ensureEmptyContent() {
     if (!this.props.value) {
-      this.refs.contentinnerHTML = '';
+      this.content.innerHTML = '';
     }
   }
 
   render() {
     const {value, style, finishEdit, ...rest} = this.props;
     return (
-      <span ref='content'
+      <span ref={el => {this.content = el}}
             contentEditable='true'
             style={style}
-            onFocus={this.onFocus.bind(this)}
-            onBlur={this.onBlur.bind(this)}
-            onClick={this.onClick.bind(this)}
-            onKeyDown={this.onKeyDown.bind(this)}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+            onClick={this.onClick}
+            onKeyDown={this.onKeyDown}
             dangerouslySetInnerHTML={{__html: value || null}}
             {...rest}
       >
@@ -194,9 +205,13 @@ Object.assign(Multiline, {
 
 
 class ReactPencil extends Component {
+  constructor(props) {
+    super(props);
+    this.finishEdit = this.finishEdit.bind(this)
+  }
 
   focus() {
-    this.refs.editable.focus();
+    this.editable.focus();
   }
 
   finishEdit(newValue = '') {
@@ -207,7 +222,7 @@ class ReactPencil extends Component {
       this.props.onEditDone(name, newValue);
     }
     if (multiline) {
-      this.refs.editable.ensureEmptyContent();
+      this.editable.ensureEmptyContent();
     }
   }
 
@@ -229,7 +244,7 @@ class ReactPencil extends Component {
     return (
       <div className={`react-pencil${wrapperClassname ? ' ' + wrapperClassname : ''}${error ? ' error' : ''}`}>
         <div className='input-field'>
-          <Component ref='editable' {...rest} finishEdit={this.finishEdit.bind(this)}/>
+          <Component ref={el = (this.editable = el)} {...rest} finishEdit={this.finishEdit}/>
           {pencil ? this.renderPencilButton() : null}
         </div>
         {error ? this.renderError(error) : null}
