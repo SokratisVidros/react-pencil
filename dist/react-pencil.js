@@ -75,6 +75,9 @@ var Singleline = function (_Component) {
     var _this = _possibleConstructorReturn(this, (Singleline.__proto__ || Object.getPrototypeOf(Singleline)).call(this));
 
     _this.state = { value: value };
+    _this.onBlur = _this.onBlur.bind(_this);
+    _this.onKeyUp = _this.onKeyUp.bind(_this);
+    _this.onChange = _this.onChange.bind(_this);
     return _this;
   }
 
@@ -118,13 +121,13 @@ var Singleline = function (_Component) {
 
       this._delayedFocus = window.setTimeout(function () {
         moveCursorToEnd(_this2.refs.content);
-        _this2.refs.content.focus();
+        _this2.content.focus();
       }, 110);
     }
   }, {
     key: 'blur',
     value: function blur() {
-      this.refs.content.blur();
+      this.content.blur();
     }
   }, {
     key: 'onKeyUp',
@@ -146,6 +149,8 @@ var Singleline = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this3 = this;
+
       var _props = this.props,
           name = _props.name,
           value = _props.value,
@@ -154,14 +159,16 @@ var Singleline = function (_Component) {
           rest = _objectWithoutProperties(_props, ['name', 'value', 'style', 'finishEdit']);
 
       return _react2.default.createElement('input', _extends({ type: 'text',
-        ref: 'content',
+        ref: function ref(el) {
+          return _this3.content = el;
+        },
         name: name,
         autoComplete: 'off',
         value: this.state.value,
         style: style,
-        onBlur: this.onBlur.bind(this),
-        onKeyUp: this.onKeyUp.bind(this),
-        onChange: this.onChange.bind(this)
+        onBlur: this.onBlur,
+        onKeyUp: this.onKeyUp,
+        onChange: this.onChange
       }, rest));
     }
   }]);
@@ -177,32 +184,38 @@ Object.assign(Singleline, {
 var Multiline = function (_Component2) {
   _inherits(Multiline, _Component2);
 
-  function Multiline() {
+  function Multiline(props) {
     _classCallCheck(this, Multiline);
 
-    return _possibleConstructorReturn(this, (Multiline.__proto__ || Object.getPrototypeOf(Multiline)).apply(this, arguments));
+    var _this4 = _possibleConstructorReturn(this, (Multiline.__proto__ || Object.getPrototypeOf(Multiline)).call(this, props));
+
+    _this4.onFocus = _this4.onFocus.bind(_this4);
+    _this4.onBlur = _this4.onBlur.bind(_this4);
+    _this4.onClick = _this4.onClick.bind(_this4);
+    _this4.onKeyDown = _this4.onKeyDown.bind(_this4);
+    return _this4;
   }
 
   _createClass(Multiline, [{
     key: 'focus',
     value: function focus() {
       this._wasClicked = true;
-      this.refs.content.focus();
+      this.content.focus();
     }
   }, {
     key: 'blur',
     value: function blur() {
-      this.refs.content.blur();
+      this.content.blur();
     }
   }, {
     key: 'selectAll',
     value: function selectAll() {
-      var _this4 = this;
+      var _this5 = this;
 
       if (document && typeof document.execCommand === 'function') {
         // Mimic input behavior when navigating to element with TAB key.
         setTimeout(function () {
-          if (!_this4._wasClicked) {
+          if (!_this5._wasClicked) {
             document.execCommand('selectAll', false, null);
           }
         }, 50);
@@ -238,25 +251,29 @@ var Multiline = function (_Component2) {
     key: 'ensureEmptyContent',
     value: function ensureEmptyContent() {
       if (!this.props.value) {
-        this.refs.contentinnerHTML = '';
+        this.content.innerHTML = '';
       }
     }
   }, {
     key: 'render',
     value: function render() {
+      var _this6 = this;
+
       var _props2 = this.props,
           value = _props2.value,
           style = _props2.style,
           finishEdit = _props2.finishEdit,
           rest = _objectWithoutProperties(_props2, ['value', 'style', 'finishEdit']);
 
-      return _react2.default.createElement('span', _extends({ ref: 'content',
+      return _react2.default.createElement('span', _extends({ ref: function ref(el) {
+          _this6.content = el;
+        },
         contentEditable: 'true',
         style: style,
-        onFocus: this.onFocus.bind(this),
-        onBlur: this.onBlur.bind(this),
-        onClick: this.onClick.bind(this),
-        onKeyDown: this.onKeyDown.bind(this),
+        onFocus: this.onFocus,
+        onBlur: this.onBlur,
+        onClick: this.onClick,
+        onKeyDown: this.onKeyDown,
         dangerouslySetInnerHTML: { __html: value || null }
       }, rest));
     }
@@ -273,16 +290,19 @@ Object.assign(Multiline, {
 var ReactPencil = function (_Component3) {
   _inherits(ReactPencil, _Component3);
 
-  function ReactPencil() {
+  function ReactPencil(props) {
     _classCallCheck(this, ReactPencil);
 
-    return _possibleConstructorReturn(this, (ReactPencil.__proto__ || Object.getPrototypeOf(ReactPencil)).apply(this, arguments));
+    var _this7 = _possibleConstructorReturn(this, (ReactPencil.__proto__ || Object.getPrototypeOf(ReactPencil)).call(this, props));
+
+    _this7.finishEdit = _this7.finishEdit.bind(_this7);
+    return _this7;
   }
 
   _createClass(ReactPencil, [{
     key: 'focus',
     value: function focus() {
-      this.refs.editable.focus();
+      this.editable.focus();
     }
   }, {
     key: 'finishEdit',
@@ -299,18 +319,18 @@ var ReactPencil = function (_Component3) {
         this.props.onEditDone(name, newValue);
       }
       if (multiline) {
-        this.refs.editable.ensureEmptyContent();
+        this.editable.ensureEmptyContent();
       }
     }
   }, {
     key: 'renderPencilButton',
     value: function renderPencilButton() {
-      var _this6 = this;
+      var _this8 = this;
 
       return _react2.default.createElement(
         'button',
         { className: 'pencil-button', onClick: function onClick() {
-            return _this6.focus();
+            return _this8.focus();
           } },
         _react2.default.createElement('i', { className: 'pencil-icon' })
       );
@@ -342,7 +362,7 @@ var ReactPencil = function (_Component3) {
         _react2.default.createElement(
           'div',
           { className: 'input-field' },
-          _react2.default.createElement(Component, _extends({ ref: 'editable' }, rest, { finishEdit: this.finishEdit.bind(this) })),
+          _react2.default.createElement(Component, _extends({ ref: el = this.editable = el }, rest, { finishEdit: this.finishEdit })),
           pencil ? this.renderPencilButton() : null
         ),
         error ? this.renderError(error) : null
