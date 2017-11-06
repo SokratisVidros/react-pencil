@@ -69,13 +69,13 @@ class Singleline extends Component {
 
   autosize() {
     try {
-      autosizeInput(this.refs.content);
+      autosizeInput(this.content);
     } catch (ignore) {}
   }
 
   focus() {
     this._delayedFocus = window.setTimeout(() => {
-      moveCursorToEnd(this.refs.content);
+      moveCursorToEnd(this.content);
       this.content.focus();
     }, 110);
   }
@@ -154,7 +154,7 @@ class Multiline extends Component {
 
   onFocus() {
     this.selectAll();
-    moveCursorToEnd(this.refs.content);
+    moveCursorToEnd(this.content);
   }
 
   onClick() {
@@ -183,7 +183,7 @@ class Multiline extends Component {
   render() {
     const {value, style, finishEdit, ...rest} = this.props;
     return (
-      <span ref={el => {this.content = el}}
+      <span ref={el => (this.content = el)}
             contentEditable='true'
             style={style}
             onFocus={this.onFocus}
@@ -244,7 +244,7 @@ class ReactPencil extends Component {
     return (
       <div className={`react-pencil${wrapperClassname ? ' ' + wrapperClassname : ''}${error ? ' error' : ''}`}>
         <div className='input-field'>
-          <Component ref={el = (this.editable = el)} {...rest} finishEdit={this.finishEdit}/>
+          <Component ref={el => (this.editable = el)} {...rest} finishEdit={this.finishEdit}/>
           {pencil ? this.renderPencilButton() : null}
         </div>
         {error ? this.renderError(error) : null}
