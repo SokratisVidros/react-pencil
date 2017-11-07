@@ -21400,7 +21400,7 @@
 	    key: 'autosize',
 	    value: function autosize() {
 	      try {
-	        (0, _autosizeInput2.default)(this.refs.content);
+	        (0, _autosizeInput2.default)(this.content);
 	      } catch (ignore) {}
 	    }
 	  }, {
@@ -21409,7 +21409,7 @@
 	      var _this2 = this;
 
 	      this._delayedFocus = window.setTimeout(function () {
-	        moveCursorToEnd(_this2.refs.content);
+	        moveCursorToEnd(_this2.content);
 	        _this2.content.focus();
 	      }, 110);
 	    }
@@ -21514,7 +21514,7 @@
 	    key: 'onFocus',
 	    value: function onFocus() {
 	      this.selectAll();
-	      moveCursorToEnd(this.refs.content);
+	      moveCursorToEnd(this.content);
 	    }
 	  }, {
 	    key: 'onClick',
@@ -21555,7 +21555,7 @@
 	          rest = _objectWithoutProperties(_props2, ['value', 'style', 'finishEdit']);
 
 	      return _react2.default.createElement('span', _extends({ ref: function ref(el) {
-	          _this6.content = el;
+	          return _this6.content = el;
 	        },
 	        contentEditable: 'true',
 	        style: style,
@@ -21628,6 +21628,8 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this9 = this;
+
 	      var _props4 = this.props,
 	          multiline = _props4.multiline,
 	          pencil = _props4.pencil,
@@ -21637,7 +21639,9 @@
 	          rest = _objectWithoutProperties(_props4, ['multiline', 'pencil', 'error', 'wrapperClassname', 'onEditDone']);
 
 	      var Component = multiline ? Multiline : Singleline;
-	      return _react2.default.createElement('div', { className: 'react-pencil' + (wrapperClassname ? ' ' + wrapperClassname : '') + (error ? ' error' : '') }, _react2.default.createElement('div', { className: 'input-field' }, _react2.default.createElement(Component, _extends({ ref: el = this.editable = el }, rest, { finishEdit: this.finishEdit })), pencil ? this.renderPencilButton() : null), error ? this.renderError(error) : null);
+	      return _react2.default.createElement('div', { className: 'react-pencil' + (wrapperClassname ? ' ' + wrapperClassname : '') + (error ? ' error' : '') }, _react2.default.createElement('div', { className: 'input-field' }, _react2.default.createElement(Component, _extends({ ref: function ref(el) {
+	          return _this9.editable = el;
+	        } }, rest, { finishEdit: this.finishEdit })), pencil ? this.renderPencilButton() : null), error ? this.renderError(error) : null);
 	    }
 	  }]);
 
